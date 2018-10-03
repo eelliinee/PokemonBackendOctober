@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Pokemon, gotcha catch them all!</title>
+        <script>
+            var baseUrl = "http://localhost:9090/";
+            var pokemonUrl = "pokemon/";
+            var pokedexUrl = "pokedex/";
+            var term;
+            var pokemon;
+
+            function redAlert(fire){
+                alert("Charmander char");
+            }
+            function blueAlert(water){
+                alert("Squirtle squir");
+            }
+            function greenAlert(grass){
+                alert("Bulbasaur bulba bulba");
+            }
+            function gastly(){};
+
+            function voegPokemonToe(){
+                pokemon = {};
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange  = function(){
+                    console.log(this.readyState);
+                    console.log(this.responseText);
+                    if(this.readyState == 4){
+                        var allPokedex = JSON.parse(this.responseText);
+                        console.log(allPokedex);
+                        insertSpecies(allPokedex);
+                    }
+                }
+                var nummer = document.getElementById("pokemonNummer").value;
+                
+                xmlhttp.open("GET",baseUrl+pokedexUrl+nummer,true);
+                xmlhttp.send();
+
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange  = function(){
+                    console.log(this.readyState);
+                    console.log(this.responseText);
+                    if(this.readyState == 4){
+                        var allPokedex = JSON.parse(this.responseText);
+                        console.log(allPokedex);
+                        insertMaxStats(allPokedex);
+                    }
+                }
+                var nummer = document.getElementById("pokemonNummer").value;
+                
+                xmlhttp.open("GET",baseUrl+pokedexUrl+nummer,true);
+                xmlhttp.send();
+            }
+
+            function postData(postObj, url, callback){
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4){
+                        callback(this.responseText);
+                    }
+                }
+                xhr.open("POST", baseUrl+url, true);       
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(postObj);
+            }
+
+            function pokedex(){
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange  = function(){
+                    console.log(this.readyState);
+                    console.log(this.responseText);
+                    if(this.readyState == 4){
+                        var allPokedex = JSON.parse(this.responseText);
+                        console.log(allPokedex);
+                        showAllSpecies(allPokedex);
+                    }
+                }
+                xmlhttp.open("GET",baseUrl+pokedexUrl,true);
+                xmlhttp.send();
+            }
+
+            function pokedexLezen(){
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange  = function(){
+                    console.log(this.readyState);
+                    console.log(this.responseText);
+                    if(this.readyState == 4){
+                        var allPokedex = JSON.parse(this.responseText);
+                        console.log(allPokedex);
+                        insertSpecies(allPokedex);
+                    }
+                }
+                var nummer = document.getElementById("pokemonNummer").value;
+                
+                xmlhttp.open("GET",baseUrl+pokedexUrl+nummer,true);
+                xmlhttp.send();
+            }
+
+            function insertSpecies(theSpecies){
+                pokemon.species = theSpecies.species;
+                pokemon.type = theSpecies.type;
+
+                pokemon.baseHP = theSpecies.baseHP;
+                pokemon.baseAttack = theSpecies.baseAttack;
+                pokemon.baseDefense = theSpecies.baseDefense;
+                pokemon.baseSpeed = theSpecies.baseSpeed;
+
+                pokemon.maxHP = theSpecies.maxHP;
+                pokemon.maxAttack = theSpecies.maxAttack;
+                pokemon.maxDefense = theSpecies.maxDefense;
+                pokemon.maxSpeed = theSpecies.maxSpeed;
+
+                pokemon.currentHP = theSpecies.currentHP;
+                pokemon.currentAttack = theSpecies.currentAttack;
+                pokemon.currentDefense = theSpecies.currentDefense;
+                pokemon.currentSpeed = theSpecies.currentSpeed;
+
+                pokemon.level = document.getElementById("pokemonLevel").value;
+            }
+
+            function insertMaxStats(theSpecies){
+
+                pokemon.maxHP = theSpecies.maxHP;
+                pokemon.maxAttack = theSpecies.maxAttack;
+                pokemon.maxDefense = theSpecies.maxDefense;
+                pokemon.maxSpeed = theSpecies.maxSpeed;
+
+                pokemon.currentHP = theSpecies.currentHP;
+                pokemon.currentAttack = theSpecies.currentAttack;
+                pokemon.currentDefense = theSpecies.currentDefense;
+                pokemon.currentSpeed = theSpecies.currentSpeed;
+
+                pokemon = JSON.stringify(pokemon);
+                postData(pokemon, pokemonUrl,blueAlert);               
+            }
+
+
+
+            function showAllSpecies(theSpecies){                
+                var deDiv = document.getElementById("hints");
+                deDiv.innerHTML = "";
+                for(x = 0 ; x < theSpecies.length ; x++){
+                    
+                    var kleur = 'lightblue';
+                    
+                    var printToevoeging = "#" + theSpecies[x].id+ " " + theSpecies[x].species+" <br>";
+                    deDiv.innerHTML = deDiv.innerHTML+printToevoeging;
+
+                }
+            
+            }
+        </script>
+    </head>
+    Voeg pokemon toe:
+    <br>Pokemon#:<input type=text id=pokemonNummer >
+    <br>Level:<input type=text id=pokemonLevel >
+    <br><input type=button onclick=voegPokemonToe() value="Vang deze pokemon">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br><div id=hints> </div>
+    <br><input type=button onclick=pokedex() value="Laad hier de beschikbare pokemonsoorten met hun soortnummer">
+</html>
+
+
+<!-- Callback-systeem!
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange  = function(){
+    console.log(this.readyState);
+    console.log(this.responseText);
+    if(this.readyState == 4){
+        .... //Hier je laatst uit te voeren opdracht invoerne
+    }
+}
+xmlhttp.open("GET",baseUrl+pokedexUrl,true);    //url wel naar behoefte aanpassen
+xmlhttp.send(); -->
